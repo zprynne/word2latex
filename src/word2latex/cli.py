@@ -8,7 +8,7 @@ from pathlib import Path
 
 from word2latex import __version__, evaluate, latex, preprocess, prompt
 from word2latex.backend import DEFAULT_MODEL, BackendError, Ollama
-from word2latex.compile import compile_tex, find_engine
+from word2latex.compile import compile_tex, find_engine, install_hint
 
 
 def _log(msg: str = "") -> None:
@@ -53,7 +53,8 @@ def cmd_convert(args: argparse.Namespace) -> int:
 
     if find_engine() is None and not args.no_compile:
         _log("note: no LaTeX engine found — writing .tex only, skipping PDF.")
-        _log("      install with: brew install --cask basictex")
+        for line in install_hint().splitlines():
+            _log(f"    {line}")
         _log("")
 
     glossary = _read_glossary(Path(args.glossary) if args.glossary else None)
@@ -198,7 +199,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     if engine:
         _log(f"latex       ok — {engine}")
     else:
-        _log("latex       MISSING — brew install --cask basictex")
+        _log("latex       MISSING")
+        for line in install_hint().splitlines():
+            _log(f"            {line.strip()}")
         ok = False
 
     try:

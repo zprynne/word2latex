@@ -43,23 +43,32 @@ exercise, and the most likely place to hit a problem. Expect to debug there.
 
 ## Setup
 
-Full instructions in `README.md`. Roughly 7 GB, all of it removable — `README.md`
-has an `## Uninstall` section that reclaims every byte.
+Full per-platform instructions are in `README.md` — macOS, Windows and Linux are all
+covered. Roughly 7 GB, all of it removable via the `## Uninstall` section there.
+
+The short version:
 
 ```bash
-uv venv && uv pip install -e .
-brew install --cask ollama && ollama serve &
-ollama pull qwen2.5vl:7b        # verify current model options first, see below
-brew install --cask basictex
-sudo tlmgr update --self && sudo tlmgr install latexmk enumitem ulem marginnote framed
-./.venv/bin/w2l check           # should report everything ok
+git clone https://github.com/zprynne/word2latex.git && cd word2latex
+uv venv && uv pip install -e .     # or python3 -m venv .venv && .venv/bin/pip install -e .
+# install Ollama, then:
+ollama pull qwen2.5vl:7b
+# install a TeX distribution (BasicTeX / MiKTeX / TeX Live)
+./.venv/bin/w2l check              # tells you what is missing, per platform
 ```
 
+`w2l check` is the fastest way to find out what your machine is still missing; it
+prints the right install command for whichever OS you are on.
+
 **On the model name:** `qwen2.5vl:7b` is a placeholder default, not a researched
-recommendation. Check the current Ollama library and pick candidates yourself. Do not
-treat the default in `backend.py` as a decision that has been made — `intentions.md`
-§6 explicitly leaves model selection open, and explicitly removes the 8B size cap
-that was in the original plan. Bigger is fine if it runs.
+recommendation. Check the current Ollama library and pick candidates yourself.
+`intentions.md` §6 explicitly leaves model selection open and explicitly removes the
+8B size cap that was in the original plan. Bigger is fine if it runs.
+
+**Platform note:** the code is pure Python and platform-agnostic — Ollama is reached
+over HTTP, LaTeX through `subprocess`. It has only been exercised on macOS, so
+Windows and Linux are untested in practice even though nothing in the code is
+Mac-specific.
 
 ## Do this first
 

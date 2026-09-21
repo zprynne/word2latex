@@ -9,10 +9,32 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 TIMEOUT = 120
+
+# TeX packages this project's preamble needs beyond a minimal install.
+TEX_PACKAGES = "latexmk enumitem ulem marginnote framed"
+
+
+def install_hint() -> str:
+    """Platform-appropriate instructions for getting a TeX engine."""
+    if sys.platform == "darwin":
+        return (
+            "  brew install --cask basictex\n"
+            f"  sudo tlmgr update --self && sudo tlmgr install {TEX_PACKAGES}"
+        )
+    if sys.platform == "win32":
+        return (
+            "  winget install MiKTeX.MiKTeX\n"
+            "  (MiKTeX installs missing packages on demand; accept the prompts)"
+        )
+    return (
+        "  sudo apt install texlive-latex-recommended texlive-latex-extra latexmk\n"
+        "  (or your distribution's equivalent)"
+    )
 
 
 @dataclass
@@ -40,8 +62,7 @@ def compile_tex(tex_path: Path, assets_dir: Path | None = None) -> CompileResult
             engine=None,
             log=(
                 "No LaTeX engine found. The .tex file was still written.\n"
-                "Install one with:  brew install --cask basictex\n"
-                "then:  sudo tlmgr install latexmk enumitem ulem marginnote framed"
+                "Install one with:\n" + install_hint()
             ),
         )
 

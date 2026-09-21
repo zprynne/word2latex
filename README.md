@@ -20,32 +20,70 @@ and tested. **Transcription quality on real handwriting is unmeasured** — that
 
 ## Install
 
-Requires [uv](https://docs.astral.sh/uv/) (already installed) and about 7 GB of disk,
-almost all of it the model. Everything is removable — see [Uninstall](#uninstall).
+Roughly 7 GB, nearly all of it the model. Everything is removable — see
+[Uninstall](#uninstall).
+
+### 1. Get the code
 
 ```bash
-# 1. The Python package (~50 MB; Pillow is the only dependency)
-uv venv && uv pip install -e .
+git clone https://github.com/zprynne/word2latex.git
+cd word2latex
+```
 
-# 2. Ollama, to serve the model locally (~500 MB)
-brew install --cask ollama
-ollama serve &
+### 2. Python environment
 
-# 3. A vision model (~6 GB). Check the Ollama library for current options —
-#    do not trust a model name hardcoded in a README.
+Needs Python 3.10+. Using [uv](https://docs.astral.sh/uv/) (recommended):
+
+```bash
+uv venv && uv pip install -e .          # ~50 MB; Pillow is the only dependency
+```
+
+Or with stock Python:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -e .              # Windows: .venv\Scripts\pip install -e .
+```
+
+### 3. Ollama, to serve the model locally
+
+| Platform | Command |
+|---|---|
+| macOS | `brew install --cask ollama` |
+| Windows | `winget install Ollama.Ollama` |
+| Linux | `curl -fsSL https://ollama.com/install.sh \| sh` |
+
+Then start it (`ollama serve`, or launch the app on macOS/Windows).
+
+### 4. A vision model (~6 GB)
+
+```bash
 ollama pull qwen2.5vl:7b
-
-# 4. LaTeX, to produce PDFs (~500 MB; skip if you only want .tex)
-brew install --cask basictex
-sudo tlmgr update --self
-sudo tlmgr install latexmk enumitem ulem marginnote framed
 ```
 
-Confirm everything is wired up:
+**Check the current Ollama library before settling on this one.** The default in
+`backend.py` is a placeholder, not a researched recommendation — `intentions.md` §6
+leaves model choice deliberately open and removes the 8B size cap from the original
+plan. Any model Ollama serves with vision support will work; pass `--model`.
+
+### 5. LaTeX, for PDF output (~500 MB)
+
+Skip this if you only want `.tex` files; the tool degrades gracefully.
+
+| Platform | Command |
+|---|---|
+| macOS | `brew install --cask basictex` then `sudo tlmgr update --self && sudo tlmgr install latexmk enumitem ulem marginnote framed` |
+| Windows | `winget install MiKTeX.MiKTeX` (installs missing packages on demand) |
+| Linux | `sudo apt install texlive-latex-recommended texlive-latex-extra latexmk` |
+
+### 6. Confirm
 
 ```bash
-./.venv/bin/w2l check
+./.venv/bin/w2l check          # Windows: .venv\Scripts\w2l check
 ```
+
+Should report `ok` on all four lines. It tells you exactly what is missing and how to
+install it for your platform.
 
 ## Use
 
@@ -117,29 +155,19 @@ not a prompt-tuning problem. See `intentions.md` §2.
 
 ## Uninstall
 
-Nothing here installs into system Python or leaves background services beyond Ollama.
-To reclaim everything:
+Nothing installs into system Python or leaves background services beyond Ollama.
 
 ```bash
-# The model weights — the big one (~6 GB)
-rm -rf ~/.ollama
-
-# Ollama itself (~500 MB)
-brew uninstall --cask ollama
-
-# LaTeX (~500 MB)
-sudo rm -rf /usr/local/texlive /Library/TeX
-brew uninstall --cask basictex
-
-# The project, venv and all outputs
-rm -rf ~/Documents/Projects/word2latex
-
-# uv's download cache, if you want it back
-uv cache clean
+rm -rf ~/.ollama                              # model weights — the big one (~6 GB)
+rm -rf ~/Documents/Projects/word2latex        # project, venv, outputs
 ```
 
-To free space without uninstalling, `ollama rm <model>` drops one model's weights and
-keeps everything else.
+Then remove Ollama and LaTeX through however you installed them — `brew uninstall
+--cask ollama basictex` on macOS, Add/Remove Programs on Windows, your package
+manager on Linux. On macOS, BasicTeX also leaves `/usr/local/texlive` and
+`/Library/TeX`, which need `sudo rm -rf`.
+
+To free space without uninstalling, `ollama rm <model>` drops one model's weights.
 
 ## Layout
 
