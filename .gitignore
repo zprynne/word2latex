@@ -1,6 +1,12 @@
+# Your notes and outputs stay local; only code is shared.
 out/
 samples/*
-!samples/.gitkeep
+!samples/pages/
+!samples/truth/
+samples/pages/*
+samples/truth/*
+!samples/**/.gitkeep
+
 .venv/
 __pycache__/
 *.pyc
