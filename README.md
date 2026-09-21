@@ -169,6 +169,13 @@ manager on Linux. On macOS, BasicTeX also leaves `/usr/local/texlive` and
 
 To free space without uninstalling, `ollama rm <model>` drops one model's weights.
 
+## Licensing
+
+This repository has no LICENSE file, which under default copyright means all rights
+reserved — the code is readable but not formally licensed for reuse, including by
+people it is shared with directly. That is deliberate for now, not an oversight. If
+you want to use or build on it, ask.
+
 ## Layout
 
 ```

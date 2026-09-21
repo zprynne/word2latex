@@ -158,3 +158,11 @@ Listed so they are not re-proposed without new information. Full reasoning in
   benefit, almost none of the work.
 - **A GUI** — justified by a PDF-preview-plus-chat loop that no longer exists once
   chat editing is cut.
+
+## Licensing
+
+No LICENSE file, so default copyright applies: all rights reserved. The repository is
+public and readable, but not formally licensed for reuse or redistribution. If you
+intend to build on this or share it onward, raise it with the owner first — adding a
+permissive licence later is trivial, and the absence is a pending decision rather than
+a statement.
