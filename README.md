@@ -7,6 +7,8 @@ Built for theoretical CS and maths notes: equations, proofs, derivations mixed w
 prose. It aims to preserve the *structure* of the page, not just the text — aligned
 derivations become `align*`, boxed results become theorem environments.
 
+New here? Start with [`HANDOFF.md`](HANDOFF.md).
+
 See [`intentions.md`](intentions.md) for the design and, importantly, for what was
 deliberately left out.
 

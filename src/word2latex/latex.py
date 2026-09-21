@@ -74,6 +74,12 @@ def _crop(img: Image.Image, box: tuple[float, float, float, float], pad: float =
     x0, y0, x1, y1 = box
     x0, x1 = sorted((x0, x1))
     y0, y1 = sorted((y0, y1))
+
+    # Judge the estimate before padding, or padding turns a useless box into a
+    # plausible-looking sliver. Below ~5% of a page dimension is not an estimate.
+    if (x1 - x0) < 0.05 or (y1 - y0) < 0.05:
+        return img
+
     x0 = max(0.0, x0 - pad)
     y0 = max(0.0, y0 - pad)
     x1 = min(1.0, x1 + pad)
@@ -84,7 +90,7 @@ def _crop(img: Image.Image, box: tuple[float, float, float, float], pad: float =
         int(x1 * img.width),
         int(y1 * img.height),
     )
-    # A degenerate box means the estimate was useless; fall back to the whole page.
+    # Guard against a box that is fractionally valid but tiny in pixel terms.
     if px[2] - px[0] < 16 or px[3] - px[1] < 16:
         return img
     return img.crop(px)
